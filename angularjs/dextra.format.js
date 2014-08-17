@@ -38,7 +38,7 @@ app.directive('dxFormat', ['$filter', 'dxCustomFormatters', function($filter, fo
                 });
 
                 elem.bind('focus', function() {
-                    elem.val(filter(value)));
+                    elem.val(filter(value));
                 });
 
                 ctrl.$formatters.unshift(function(modelValue) {
