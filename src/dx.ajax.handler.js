@@ -1,39 +1,37 @@
-/**
- * Este componente intercepta todas as requisições HTTP e fornece "2 callbacks"
- * para que sejam utilizadas pela aplicação: uma quando a requisição está ainda 
- * em andamento, e a outra quando todas as requisições terminara. Pode-se usar
- * isso para ativar um imagem de "loading" por exemplo.
- * @since 2014/08/17
- */
-angular.module('dextra.http', ['ng']).config(function($httpProvider, $provide) {
+angular.module('dx.ajax.handler', [
+    'ng',
+])
 
-    $provide.value("dxLoadingHideHandler", function(response) {
-        // hide callback
-    });
-    $provide.value("dxLoadingShowHandler", function(response) {
-        // show callback
+.config(function($httpProvider, $provide) {
+
+    $provide.value("dxAjaxHandlerStart", function(response) {
+        // must be defined
     });
 
-    $provide.factory("dxErrorHandler", function($log) {
+    $provide.value("dxAjaxHandlerStop", function(response) {
+        // must be defined
+    });
+
+    $provide.factory("dxAjaxHandlerError", function($log) {
         return function(response) {
             $log.error('Http Error ' + response.status + " : " + response.data);
         }
     });
 
-    $httpProvider.interceptors.push(function(dxErrorHandler, $q) {
+    $httpProvider.interceptors.push(function(dxAjaxHandlerError, $q) {
         return {
             responseError: function(response) {
-                dxErrorHandler(response);
+                dxAjaxHandlerError(response);
                 return $q.reject(response);
             }
         }
     });
 
-    $httpProvider.interceptors.push(function(dxLoadingShowHandler, dxLoadingHideHandler, $q, $log) {
+    $httpProvider.interceptors.push(function(dxAjaxHandlerStart, dxAjaxHandlerStop, $q, $log) {
         var interceptor = {
             request: function(request) {
                 if (interceptor.count == 0) {
-                    dxLoadingShowHandler();
+                    dxAjaxHandlerStart();
                 }
                 interceptor.count++;
                 return request;
@@ -41,21 +39,21 @@ angular.module('dextra.http', ['ng']).config(function($httpProvider, $provide) {
             requestError: function(request) {
                 interceptor.count--;
                 if (interceptor.count == 0) {
-                    dxLoadingHideHandler();
+                    dxAjaxHandlerStop();
                 }
                 return $q.reject(request);
             },
             response: function(response) {
                 interceptor.count--;
                 if (interceptor.count == 0) {
-                    dxLoadingHideHandler();
+                    dxAjaxHandlerStop();
                 }
                 return response;
             },
             responseError: function(response) {
                 interceptor.count--;
                 if (interceptor.count == 0) {
-                    dxLoadingHideHandler();
+                    dxAjaxHandlerStop();
                 }
                 return $q.reject(response);
             }

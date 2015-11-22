@@ -1,6 +1,8 @@
-var app = angular.module('dextra.growl.notifications', ['ngAnimate']);
+angular.module('dx.growl.notifications', [
+    'ngAnimate',
+])
 
-app.directive('dxGrowlNotifications', function() {
+.directive('dxGrowlNotifications', function() {
     return {
         scope: {
             dismissible: '=',
@@ -10,8 +12,6 @@ app.directive('dxGrowlNotifications', function() {
                 $scope.messages = session.messages;
 
                 $scope.$watchCollection('messages', function($new, $old) {
-//                    console.info('value.length: ' + $new.length);
-//                    console.info('value.length: ' + $old.length);
                     session.decDelay();
                 });
             }
@@ -29,9 +29,9 @@ app.directive('dxGrowlNotifications', function() {
             return template.join('\n');
         }
     };
-});
+})
 
-app.service('dxGrowlNotificationSession', function($timeout) {
+.service('dxGrowlNotificationSession', function($timeout) {
 
     // TODO: transfer to controller
 
@@ -47,8 +47,6 @@ app.service('dxGrowlNotificationSession', function($timeout) {
     this.messages = {};
 
     this.add = function(type, value) {
-
-//        console.info('this.delay_ttl: ' + this.delay_ttl);
         this.registerAdd(type, value);
         this.incDelay();
     };
@@ -102,37 +100,35 @@ app.service('dxGrowlNotificationSession', function($timeout) {
         }
     };
 
-});
+})
 
-app.service('dxGrowlNotificationService', ['dxGrowlNotificationSession', 'dxI18n', function(session, dxI18n) {
+.service('dxGrowlNotificationService', ['dxGrowlNotificationSession', 'dxI18n', function(session, dxI18n) {
 
-        this.add = function(level, value) {
+    this.add = function(level, value) {
 
-            if (typeof (value) === 'string') {
-                value = [value];
-            }
+        if (typeof (value) === 'string') {
+            value = [value];
+        }
 
-            for (var i in value) {
-                session.add(level, dxI18n(value[i]));
-            }
+        for (var i in value) {
+            session.add(level, dxI18n(value[i]));
+        }
 
-        };
+    };
 
-        this.error = function(value) {
-            this.add('danger', value);
-        };
+    this.error = function(value) {
+        this.add('danger', value);
+    };
 
-        this.info = function(value) {
-            this.add('info', value);
-        };
+    this.info = function(value) {
+        this.add('info', value);
+    };
 
-        this.success = function(value) {
-            this.add('success', value);
-        };
+    this.success = function(value) {
+        this.add('success', value);
+    };
 
-        this.warn = function(value) {
-            this.add('warning', value);
-        };
-    }
-
-]);
+    this.warn = function(value) {
+        this.add('warning', value);
+    };
+}])
