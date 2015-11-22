@@ -23,9 +23,9 @@ Allows any declared filter into the application modules to be used as formatter 
 
 Ex:
 
-``
+```html
 <input type="text" dx-format="number:2" />
-``
+```
 
 ### dxFormattersProvider
 
@@ -35,7 +35,7 @@ Allows application to create new formatters to be use together with the **dx-for
 
 Ex:
 
-``
+```js
 dxFormattersProvider.add('foo', {
     format: function(value) {
         return value;
@@ -44,7 +44,7 @@ dxFormattersProvider.add('foo', {
         return value;
     }
 })
-``
+```
 
 ### Embedded filters
 
@@ -58,19 +58,21 @@ Internatinalization easy as never.
 
 #### Directive (A)
 
-``
+```html
 <span>{{'app.greetings'|dxI18n}}</span>
-``
+```
 
 #### Directive (E)
 
+```html
 <span dx-i18n="app.greetings"></span>
+```
 
 #### Filter
 
-``
+```html
 <ul ng-repeat="item in items : dxI18n(item.type)">...</ul>
-``
+```
 
 ### Configuration
 
@@ -82,15 +84,14 @@ Set the resources bundle for internatinalization
 
 Ex:
 
-``
+```js
 var resourcesBundle = {
 	'app.title': 'Title',
 	'app.greetings': 'Hello world'
 };
 
-dxI18nProvider.setResourcesBundle(resourcesBunble);
-
-``
+dxI18nProvider.setResourcesBundle(resourcesBundle);
+```
 
 ## dx.growl.notifications
 
