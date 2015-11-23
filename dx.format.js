@@ -1,9 +1,9 @@
 angular.module('dx.format', [
-  'ngModel',
+  'ng',
 ])
 
-.provide('dxFormatters', function() {
-    
+.provider('dxFormatters', function() {
+
     var formatters = [];
 
     this.add = function(name, formatter) {
@@ -20,7 +20,7 @@ angular.module('dx.format', [
         },
         unformat: function(value) {
             return value;
-        }-
+        }
     });
 
     this.add('percentage', { // filter is below

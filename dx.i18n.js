@@ -26,64 +26,65 @@ angular.module('dx.i18n' , [
     };
 }])
 
-.provide("dxI18n", ['$locale', function($locale) {
+.provider("dxI18n", function() {
 
-    var resourcesBundle;
+    var resourceBundle;
 
-    this.setResourcesBundle = function(value) {
-        resourcesBundle = value;
+    this.setResourceBundle = function(value) {
+        resourceBundle = value;
     }
 
-    var dxI18n = function(key) {
-        var object = resourcesBundle[key];
-        var result = object && object != '' ? object : key;
-        for (var i = 1; i < arguments.length; i++) {
-            var index = i - 1;
-            result = result.replace(new RegExp('\\{' + index + '\\}', 'gm'), arguments[i]);
-        }
-        return result;
-    };
+    this.$get = ['$locale', function($locale) {
 
-    dxI18n.getMessage = dxI18n;
+        var dxI18n = function(key) {
+            var object = resourceBundle[key];
+            var result = object && object != '' ? object : key;
+            for (var i = 1; i < arguments.length; i++) {
+                var index = i - 1;
+                result = result.replace(new RegExp('\\{' + index + '\\}', 'gm'), arguments[i]);
+            }
+            return result;
+        };
 
-    dxI18n.getPattern = function(style, type) {
-        var t = '';
-        if (type) {
-            t = type.charAt(0).toUpperCase() + type.slice(1);
-        }
-        var property = style + '' + t;
-        return $locale.DATETIME_FORMATS[property];
-    };
+        dxI18n.getMessage = dxI18n;
 
-    dxI18n.getJQueryFormat = function(pattern) {
-        return convertToJQueryDateFormat(pattern);
-    };
+        dxI18n.getPattern = function(style, type) {
+            var t = '';
+            if (type) {
+                t = type.charAt(0).toUpperCase() + type.slice(1);
+            }
+            var property = style + '' + t;
+            return $locale.DATETIME_FORMATS[property];
+        };
 
-    dxI18n.formatDate = function(value, pattern) {
-        var format = this.getJQueryFormat(pattern);
-        return $.datepicker.formatDate(format, new Date(value));
-    };
+        dxI18n.getJQueryFormat = function(pattern) {
+            return convertToJQueryDateFormat(pattern);
+        };
 
-    dxI18n.parseDate = function(value, pattern) {
-        var format = this.getJQueryFormat(pattern);
-        return $.datepicker.parseDate(format, value);
-    };
+        dxI18n.formatDate = function(value, pattern) {
+            var format = this.getJQueryFormat(pattern);
+            return $.datepicker.formatDate(format, new Date(value));
+        };
 
-    dxI18n.formatTime = function(value, pattern) {
-        var format = this.getJQueryFormat(pattern);
-        return $.datepicker.formatDate(format, new Date(value));
-    };
+        dxI18n.parseDate = function(value, pattern) {
+            var format = this.getJQueryFormat(pattern);
+            return $.datepicker.parseDate(format, value);
+        };
 
-    dxI18n.parseTime = function(value, pattern) {
-        var format = this.getJQueryFormat(pattern);
-        return $.datepicker.parseDate(format, value);
-    };
+        dxI18n.formatTime = function(value, pattern) {
+            var format = this.getJQueryFormat(pattern);
+            return $.datepicker.formatDate(format, new Date(value));
+        };
 
-    this.$get = [function() {
+        dxI18n.parseTime = function(value, pattern) {
+            var format = this.getJQueryFormat(pattern);
+            return $.datepicker.parseDate(format, value);
+        };
+
         return dxI18n;
     }];
 
-}]);
+})
 
 function convertToJQueryDateFormat(pattern) {
 
