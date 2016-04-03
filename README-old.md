@@ -1,7 +1,7 @@
 dx-angularjs-modules
 ====================
 
-## Ajax Loading [dx.ajax.loading]
+## Ajax handler [dx.ajax.handler]
 
 Http interceptor to handle ajax calls by the application, can be used to show and hide a loading modal for example.
 
