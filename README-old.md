@@ -1,4 +1,4 @@
-dx-angularjs-modules
+angularjs-dx-modules
 ====================
 
 ## Ajax handler [dx.ajax.handler]
