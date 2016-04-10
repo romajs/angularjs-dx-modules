@@ -28,98 +28,45 @@ angular.module('dx.i18n' , [
 
 .provider("dxI18n", function() {
 
-    var resourceBundle;
+    var dxI18n = new function() {
 
-    this.setResourceBundle = function(value) {
-        resourceBundle = value;
-    }
+        this.lang = null;
+        this.languages = {};
 
-    this.$get = ['$locale', function($locale) {
+        this.add = function(lang, json) {
+            this.languages[lang] = json;
+        };
 
-        var dxI18n = function(key) {
-            var object = resourceBundle[key];
+        this.set = function(lang, json) {
+            json && this.add(lang, json);
+            this.lang = lang;
+        };
+
+        this.getMessage = function(key) {
+            var object = this.languages[this.lang][key];
             var result = object && object != '' ? object : key;
-            for (var i = 1; i < arguments.length; i++) {
-                var index = i - 1;
-                result = result.replace(new RegExp('\\{' + index + '\\}', 'gm'), arguments[i]);
+            // console.info(key, object, result);
+            if(result) {
+                    for (var i = 1; i < arguments.length; i++) {
+                    var index = i - 1;
+                    result = result.replace(new RegExp('\\{' + index + '\\}', 'gm'), arguments[i]);
+                }
             }
             return result;
         };
 
-        dxI18n.getMessage = dxI18n;
+    };
 
-        dxI18n.getPattern = function(style, type) {
-            var t = '';
-            if (type) {
-                t = type.charAt(0).toUpperCase() + type.slice(1);
-            }
-            var property = style + '' + t;
-            return $locale.DATETIME_FORMATS[property];
-        };
+    this.add = function(key, json) {
+        dxI18n.add(key, json);
+    };
 
-        dxI18n.getJQueryFormat = function(pattern) {
-            return convertToJQueryDateFormat(pattern);
-        };
+    this.set = function(key, json) {
+        dxI18n.set(key, json);
+    };
 
-        dxI18n.formatDate = function(value, pattern) {
-            var format = this.getJQueryFormat(pattern);
-            return $.datepicker.formatDate(format, new Date(value));
-        };
-
-        dxI18n.parseDate = function(value, pattern) {
-            var format = this.getJQueryFormat(pattern);
-            return $.datepicker.parseDate(format, value);
-        };
-
-        dxI18n.formatTime = function(value, pattern) {
-            var format = this.getJQueryFormat(pattern);
-            return $.datepicker.formatDate(format, new Date(value));
-        };
-
-        dxI18n.parseTime = function(value, pattern) {
-            var format = this.getJQueryFormat(pattern);
-            return $.datepicker.parseDate(format, value);
-        };
-
+    this.$get = [function() {
         return dxI18n;
     }];
 
 })
-
-function convertToJQueryDateFormat(pattern) {
-
-    // Year
-    if (pattern.search(/y{3,}/g) >= 0) { /* YYYY */
-        pattern = pattern.replace(/y{3,}/g, "yy");
-    } else if (pattern.search(/y{2}/g) >= 0) { /* YY */
-        pattern = pattern.replace(/y{2}/g, "y");
-    }
-
-    // Month
-    if (pattern.search(/M{4,}/g) >= 0) { /* MMMM */
-        pattern = pattern.replace(/M{4,}/g, "MM");
-    } else if (pattern.search(/M{3}/g) >= 0) { /* MMM */
-        pattern = pattern.replace(/M{3}/g, "M");
-    } else if (pattern.search(/M{2}/g) >= 0) { /* MM */
-        pattern = pattern.replace(/M{2}/g, "mm");
-    } else if (pattern.search(/M{1}/g) >= 0) { /* M */
-        pattern = pattern.replace(/M{1}/g, "m");
-    }
-
-    // Day
-    if (pattern.search(/D{2,}/g) >= 0) { /* DD */
-        pattern = pattern.replace(/D{2,}/g, "oo");
-    } else if (pattern.search(/D{1}/g) >= 0) { /* D */
-        pattern = pattern.replace(/D{1}/g, "o");
-    }
-
-    // Day of month
-    if (pattern.search(/E{4,}/g) >= 0) { /* EEEE */
-        pattern = pattern.replace(/E{4,}/g, "DD");
-    } else if (pattern.search(/E{2,3}/g) >= 0) { /* EEE */
-        pattern = pattern.replace(/E{2,3}/g, "D");
-    }
-
-    return pattern;
-
-};
